@@ -1,12 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_margin="16dp"
+    android:padding="20dp">
 
-    <!-- Nom -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        app:cardCornerRadius="16dp"
+        app:cardElevation="4dp"
+        android:layout_margin="8dp"
+        app:cardBackgroundColor="#2196F3">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:title="My Application"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:background="@android:color/transparent"/>
+    </androidx.cardview.widget.CardView>
+
+    <!-- Last Name -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,20 +34,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_nom"
+            android:text="@string/label_last_name"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp" />
 
         <EditText
-            android:id="@+id/edit_nom"
+            android:id="@+id/edit_last_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/hint_nom"
-            android:inputType="textPersonName"/>
+            android:hint="@string/hint_last_name"
+            android:inputType="textPersonName" />
     </LinearLayout>
 
-    <!-- Prénom -->
+    <!-- First Name -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,20 +56,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_prenom"
+            android:text="@string/label_first_name"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp" />
 
         <EditText
-            android:id="@+id/edit_prenom"
+            android:id="@+id/edit_first_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/hint_prenom"
-            android:inputType="textPersonName"/>
+            android:hint="@string/hint_first_name"
+            android:inputType="textPersonName" />
     </LinearLayout>
 
-    <!-- Date de naissance -->
+    <!-- Birth Date -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -59,20 +78,20 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_date_naissance"
+            android:text="@string/label_birth_date"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp" />
 
         <EditText
-            android:id="@+id/edit_date_naissance"
+            android:id="@+id/edit_birth_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/hint_date_naissance"
-            android:inputType="date"/>
+            android:hint="@string/hint_birth_date"
+            android:inputType="date" />
     </LinearLayout>
 
-    <!-- Ville de naissance -->
+    <!-- Birth City -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -81,24 +100,27 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_ville_naissance"
+            android:text="@string/label_birth_city"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="8dp"/>
+            android:layout_marginEnd="8dp" />
 
         <EditText
-            android:id="@+id/edit_ville_naissance"
+            android:id="@+id/edit_birth_city"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="@string/hint_ville_naissance"
-            android:inputType="text"/>
+            android:hint="@string/hint_birth_city"
+            android:inputType="text" />
     </LinearLayout>
 
-    <!-- Bouton Validate -->
+    <!-- Validate Button -->
     <Button
         android:id="@+id/btn_validate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:text="@string/btn_validate"
-        android:layout_marginTop="16dp"/>
+        android:backgroundTint="#2196F3"
+        app:rippleColor="#000080"
+        android:onClick="validateAction"/>
 </LinearLayout>

@@ -2,17 +2,19 @@
     <string name="app_name">MyApplication</string>
 
     <!-- Labels -->
-    <string name="label_nom">Last Name:</string>
-    <string name="label_prenom">First Name:</string>
-    <string name="label_date_naissance">Date of Birth:</string>
-    <string name="label_ville_naissance">City of Birth:</string>
+    <string name="label_last_name">Last Name:</string>
+    <string name="label_first_name">First Name:</string>
+    <string name="label_birth_date">Date of Birth:</string>
+    <string name="label_birth_city">City of Birth:</string>
 
     <!-- Hints -->
-    <string name="hint_nom">Enter your last name</string>
-    <string name="hint_prenom">Enter your first name</string>
-    <string name="hint_date_naissance">DD/MM/YYYY</string>
-    <string name="hint_ville_naissance">Enter your city of birth</string>
+    <string name="hint_last_name">Enter your last name</string>
+    <string name="hint_first_name">Enter your first name</string>
+    <string name="hint_birth_date">DD/MM/YYYY</string>
+    <string name="hint_birth_city">Enter your city of birth</string>
 
     <!-- Button -->
     <string name="btn_validate">Validate</string>
+
+    <string name="reset_action">Reset Fields</string>
 </resources>
