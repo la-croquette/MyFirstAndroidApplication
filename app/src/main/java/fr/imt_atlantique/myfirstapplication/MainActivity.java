@@ -1,13 +1,21 @@
 package fr.imt_atlantique.myfirstapplication;
 
+import android.app.DatePickerDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
-
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,7 +26,15 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Calendar;
+
 public class MainActivity extends AppCompatActivity {
+    private LinearLayout phoneContainer;
+    private Button btnRemovePhone;
+    private Spinner spinnerDepartments;
+    private EditText birthDateEditText;
+    private int phoneCount = 0;
+    private String selectedDepartment = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
         View mainLayout = findViewById(R.id.main_layout);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // 适配系统栏 (状态栏 & 导航栏)
         if (mainLayout != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -39,33 +57,79 @@ public class MainActivity extends AppCompatActivity {
         } else {
             Log.e("Lifecycle", "Error: main_layout not found in activity_main.xml");
         }
+
+        phoneContainer = findViewById(R.id.phone_container);
+        Button btnAddPhone = findViewById(R.id.btn_add_phone);
+        btnRemovePhone = findViewById(R.id.btn_remove_phone);
+        spinnerDepartments = findViewById(R.id.spinner_departments);
+        birthDateEditText = findViewById(R.id.edit_birth_date);
+
+        btnAddPhone.setOnClickListener(v -> addPhoneNumberField());
+        btnRemovePhone.setOnClickListener(v -> removePhoneNumberField());
+
+        spinnerDepartments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                selectedDepartment = parent.getItemAtPosition(position).toString();
+                updateSnackbarMessage();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                selectedDepartment = "";
+            }
+        });
+
+        birthDateEditText.setOnClickListener(v -> showDatePickerDialog());
+    }
+
+    private void showDatePickerDialog() {
+
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        // 创建 DatePickerDialog
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
+            String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
+            birthDateEditText.setText(selectedDate);
+            updateSnackbarMessage();
+        }, year, month, day);
+
+        datePickerDialog.show();
     }
 
     public void validateAction(View v) {
-
         EditText lastName = findViewById(R.id.edit_last_name);
         EditText firstName = findViewById(R.id.edit_first_name);
-        EditText birthDate = findViewById(R.id.edit_birth_date);
         EditText birthCity = findViewById(R.id.edit_birth_city);
 
+        StringBuilder phoneNumbers = new StringBuilder();
+        for (int i = 0; i < phoneContainer.getChildCount(); i++) {
+            View phoneEntry = phoneContainer.getChildAt(i);
+            if (phoneEntry instanceof LinearLayout) {
+                EditText phoneInput = (EditText) ((LinearLayout) phoneEntry).getChildAt(0);
+                String phone = phoneInput.getText().toString();
+                if (!phone.isEmpty()) {
+                    phoneNumbers.append("- ").append(phone).append("\n");
+                }
+            }
+        }
 
         String textToShow = "Last Name: " + lastName.getText().toString() + "\n"
                 + "First Name: " + firstName.getText().toString() + "\n"
-                + "Birth Date: " + birthDate.getText().toString() + "\n"
-                + "Birth City: " + birthCity.getText().toString() ;
+                + "Birth Date: " + birthDateEditText.getText().toString() + "\n"
+                + "Birth City: " + birthCity.getText().toString() + "\n"
+                + "Department: " + selectedDepartment + "\n"
+                + "Phone Numbers:\n" + (phoneNumbers.length() > 0 ? phoneNumbers.toString() : "None");;
 
         Snackbar snackbar = Snackbar.make(findViewById(R.id.main_layout), textToShow, Snackbar.LENGTH_LONG);
+        snackbar.setAction("DISMISS", v1 -> snackbar.dismiss());
 
-        snackbar.setAction("DISMISS", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                snackbar.dismiss();
-            }
-        });
         View snackbarView = snackbar.getView();
         TextView snackbarText = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
-
-        snackbarText.setMaxLines(5);
+        snackbarText.setMaxLines(10);
         snackbarText.setSingleLine(false);
         snackbar.show();
     }
@@ -77,19 +141,75 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void resetAction(MenuItem item) {
-
         EditText lastName = findViewById(R.id.edit_last_name);
         EditText firstName = findViewById(R.id.edit_first_name);
-        EditText birthDate = findViewById(R.id.edit_birth_date);
         EditText birthCity = findViewById(R.id.edit_birth_city);
 
         lastName.setText("");
         firstName.setText("");
-        birthDate.setText("");
+        birthDateEditText.setText("");
         birthCity.setText("");
+        phoneContainer.removeAllViews();
+        phoneCount = 0;
+        btnRemovePhone.setVisibility(View.GONE);
 
-        Snackbar.make(findViewById(R.id.main_layout), "Fields have been reset", Snackbar.LENGTH_SHORT).show();
+        spinnerDepartments.setSelection(0);
+        selectedDepartment = "";
+
+        Snackbar.make(findViewById(R.id.main_layout), "All fields reset", Snackbar.LENGTH_SHORT).show();
     }
 
+    private void addPhoneNumberField() {
+        // 创建新的 LinearLayout
+        LinearLayout phoneEntry = new LinearLayout(this);
+        phoneEntry.setOrientation(LinearLayout.HORIZONTAL);
 
+        // 创建输入框
+        EditText phoneInput = new EditText(this);
+        phoneInput.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        phoneInput.setHint("Enter phone number");
+        phoneInput.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
+
+        // 创建删除按钮（垃圾桶图标）
+        ImageButton deleteButton = new ImageButton(this);
+        deleteButton.setImageResource(android.R.drawable.ic_delete);
+        deleteButton.setBackgroundColor(0); // 透明背景
+        deleteButton.setOnClickListener(v -> {
+            phoneContainer.removeView(phoneEntry);
+            phoneCount--;
+            updateSnackbarMessage();
+        });
+
+        // 将输入框和删除按钮加入 Layout
+        phoneEntry.addView(phoneInput);
+        phoneEntry.addView(deleteButton);
+        phoneContainer.addView(phoneEntry);
+        phoneCount++;
+
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(phoneInput.getWindowToken(), 0);
+        }
+
+        updateSnackbarMessage();
+    }
+
+    private void removePhoneNumberField() {
+        int childCount = phoneContainer.getChildCount();
+        if (childCount > 0) {
+            phoneContainer.removeViewAt(childCount - 1);
+            phoneCount--;
+        }
+
+        if (phoneCount == 0) {
+            btnRemovePhone.setVisibility(View.GONE);
+        }
+        updateSnackbarMessage();
+    }
+
+    private void updateSnackbarMessage() {
+        String message = "Fields updated. Phone numbers: " + phoneCount + ", Birth Date: " + birthDateEditText.getText().toString() + ", Department: " + selectedDepartment;
+        Snackbar.make(findViewById(R.id.main_layout), message, Snackbar.LENGTH_SHORT).show();
+    }
 }

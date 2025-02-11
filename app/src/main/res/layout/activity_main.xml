@@ -88,7 +88,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="@string/hint_birth_date"
-            android:inputType="date" />
+            android:focusable="false"
+            android:clickable="true"/>
     </LinearLayout>
 
     <!-- Birth City -->
@@ -113,6 +114,54 @@
             android:inputType="text" />
     </LinearLayout>
 
+    <!-- Département de naissance  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Department:"
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="8dp" />
+
+        <Spinner
+            android:id="@+id/spinner_departments"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:entries="@array/departments"/>
+    </LinearLayout>
+
+    <!-- Phone Numbers Container -->
+    <LinearLayout
+        android:id="@+id/phone_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"/>
+
+    <!-- Buttons for adding/removing phone numbers -->
+    <Button
+        android:id="@+id/btn_add_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Phone Number"
+        android:backgroundTint="#009688"
+        android:layout_marginTop="8dp"/>
+
+    <Button
+        android:id="@+id/btn_remove_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remove Phone Number"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#E91E63"
+        android:visibility="gone"/>
+
     <!-- Validate Button -->
     <Button
         android:id="@+id/btn_validate"
@@ -124,3 +173,5 @@
         app:rippleColor="#000080"
         android:onClick="validateAction"/>
 </LinearLayout>
+
+
