@@ -17,4 +17,6 @@
     <string name="btn_validate">Validate</string>
 
     <string name="reset_action">Reset Fields</string>
+    <string name="add_phone_number">Add Phone Number</string>
+    <string name="remove_phone_number">Remove Phone Number</string>
 </resources>

@@ -149,7 +149,7 @@
         android:id="@+id/btn_add_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Phone Number"
+        android:text="@string/add_phone_number"
         android:backgroundTint="#009688"
         android:layout_marginTop="8dp"/>
 
@@ -157,7 +157,7 @@
         android:id="@+id/btn_remove_phone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Remove Phone Number"
+        android:text="@string/remove_phone_number"
         android:layout_marginTop="8dp"
         android:backgroundTint="#E91E63"
         android:visibility="gone"/>

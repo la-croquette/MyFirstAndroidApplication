@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">MonApplication</string>
+
+    <!-- Labels -->
+    <string name="label_last_name">Nom :</string>
+    <string name="label_first_name">Prénom :</string>
+    <string name="label_birth_date">Date de naissance :</string>
+    <string name="label_birth_city">Ville de naissance :</string>
+
+    <!-- Hints -->
+    <string name="hint_last_name">Entrez votre nom</string>
+    <string name="hint_first_name">Entrez votre prénom</string>
+    <string name="hint_birth_date">JJ/MM/AAAA</string>
+    <string name="hint_birth_city">Entrez votre ville de naissance</string>
+
+    <!-- Button -->
+    <string name="btn_validate">Valider</string>
+
+    <string name="reset_action">Réinitialiser les champs</string>
+    <string name="add_phone_number">Ajouter un numéro de téléphone</string>
+    <string name="remove_phone_number">Supprimer un numéro de téléphone</string>
+</resources>
