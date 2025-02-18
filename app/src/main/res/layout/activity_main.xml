@@ -23,6 +23,7 @@
             app:title="My Application"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             android:background="@android:color/transparent"/>
+
     </androidx.cardview.widget.CardView>
 
     <!-- Last Name -->
@@ -114,7 +115,7 @@
             android:inputType="text" />
     </LinearLayout>
 
-    <!-- Département de naissance  -->
+    <!-- Department  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -144,7 +145,7 @@
         android:orientation="vertical"
         android:layout_marginTop="16dp"/>
 
-    <!-- Buttons for adding/removing phone numbers -->
+    <!-- Buttons for adding phone numbers -->
     <Button
         android:id="@+id/btn_add_phone"
         android:layout_width="match_parent"
@@ -152,15 +153,6 @@
         android:text="@string/add_phone_number"
         android:backgroundTint="#009688"
         android:layout_marginTop="8dp"/>
-
-    <Button
-        android:id="@+id/btn_remove_phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/remove_phone_number"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#E91E63"
-        android:visibility="gone"/>
 
     <!-- Validate Button -->
     <Button

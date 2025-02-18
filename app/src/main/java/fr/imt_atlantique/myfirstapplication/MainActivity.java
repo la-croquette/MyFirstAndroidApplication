@@ -30,7 +30,6 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     private LinearLayout phoneContainer;
-    private Button btnRemovePhone;
     private Spinner spinnerDepartments;
     private EditText birthDateEditText;
     private int phoneCount = 0;
@@ -46,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // 适配系统栏 (状态栏 & 导航栏)
         if (mainLayout != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -60,13 +58,11 @@ public class MainActivity extends AppCompatActivity {
 
         phoneContainer = findViewById(R.id.phone_container);
         Button btnAddPhone = findViewById(R.id.btn_add_phone);
-        btnRemovePhone = findViewById(R.id.btn_remove_phone);
         spinnerDepartments = findViewById(R.id.spinner_departments);
         birthDateEditText = findViewById(R.id.edit_birth_date);
 
         btnAddPhone.setOnClickListener(v -> addPhoneNumberField());
-        btnRemovePhone.setOnClickListener(v -> removePhoneNumberField());
-
+        // class anonyme
         spinnerDepartments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -90,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // 创建 DatePickerDialog
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
             String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
             birthDateEditText.setText(selectedDate);
@@ -110,9 +106,9 @@ public class MainActivity extends AppCompatActivity {
             View phoneEntry = phoneContainer.getChildAt(i);
             if (phoneEntry instanceof LinearLayout) {
                 EditText phoneInput = (EditText) ((LinearLayout) phoneEntry).getChildAt(0);
-                String phone = phoneInput.getText().toString();
-                if (!phone.isEmpty()) {
-                    phoneNumbers.append("- ").append(phone).append("\n");
+                String phoneNumber = phoneInput.getText().toString();
+                if (!phoneNumber.isEmpty()) {
+                    phoneNumbers.append("- ").append(phoneNumber).append("\n");
                 }
             }
         }
@@ -151,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         birthCity.setText("");
         phoneContainer.removeAllViews();
         phoneCount = 0;
-        btnRemovePhone.setVisibility(View.GONE);
+
 
         spinnerDepartments.setSelection(0);
         selectedDepartment = "";
@@ -160,28 +156,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void addPhoneNumberField() {
-        // 创建新的 LinearLayout
+
         LinearLayout phoneEntry = new LinearLayout(this);
         phoneEntry.setOrientation(LinearLayout.HORIZONTAL);
 
-        // 创建输入框
+
         EditText phoneInput = new EditText(this);
         phoneInput.setLayoutParams(new LinearLayout.LayoutParams(
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
         phoneInput.setHint("Enter phone number");
         phoneInput.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
 
-        // 创建删除按钮（垃圾桶图标）
+
         ImageButton deleteButton = new ImageButton(this);
         deleteButton.setImageResource(android.R.drawable.ic_delete);
-        deleteButton.setBackgroundColor(0); // 透明背景
+        deleteButton.setBackgroundColor(0);
+        // 只有一个 所以可以用兰巴达表达式
         deleteButton.setOnClickListener(v -> {
             phoneContainer.removeView(phoneEntry);
             phoneCount--;
             updateSnackbarMessage();
         });
 
-        // 将输入框和删除按钮加入 Layout
+
         phoneEntry.addView(phoneInput);
         phoneEntry.addView(deleteButton);
         phoneContainer.addView(phoneEntry);
@@ -192,19 +189,6 @@ public class MainActivity extends AppCompatActivity {
             imm.hideSoftInputFromWindow(phoneInput.getWindowToken(), 0);
         }
 
-        updateSnackbarMessage();
-    }
-
-    private void removePhoneNumberField() {
-        int childCount = phoneContainer.getChildCount();
-        if (childCount > 0) {
-            phoneContainer.removeViewAt(childCount - 1);
-            phoneCount--;
-        }
-
-        if (phoneCount == 0) {
-            btnRemovePhone.setVisibility(View.GONE);
-        }
         updateSnackbarMessage();
     }
 
