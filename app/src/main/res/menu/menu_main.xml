@@ -13,4 +13,10 @@
         android:title="@string/action_wikipedia"
         android:orderInCategory="100"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_share_city"
+        android:title="Partager la ville"
+        android:orderInCategory="101"
+        app:showAsAction="never" />
 </menu>

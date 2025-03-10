@@ -142,9 +142,13 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_wikipedia) {
-            openWikipediaPage(); // 点击菜单项，调用打开 Wikipedia 的方法
+            openWikipediaPage();
+            return true;
+        } else if (id == R.id.action_share_city) {
+            shareBirthCity();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
     private void openWikipediaPage() {
@@ -165,6 +169,32 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
         } else {
             Snackbar.make(findViewById(R.id.main_layout), "Aucun navigateur trouvé pour ouvrir le lien.", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private void shareBirthCity() {
+        EditText birthCity = findViewById(R.id.edit_birth_city);
+        String city = birthCity.getText().toString().trim();
+
+        if (city.isEmpty()) {
+            Snackbar.make(findViewById(R.id.main_layout), "Veuillez entrer la ville de naissance.", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+
+        String shareText = "Je suis né(e) à " + city + ".";
+
+
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, shareText);
+        intent.setType("text/plain");
+
+        Intent chooser = Intent.createChooser(intent, "Partager via");
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(chooser);
+        } else {
+            Snackbar.make(findViewById(R.id.main_layout), "Aucune application disponible pour partager.", Snackbar.LENGTH_SHORT).show();
         }
     }
 
