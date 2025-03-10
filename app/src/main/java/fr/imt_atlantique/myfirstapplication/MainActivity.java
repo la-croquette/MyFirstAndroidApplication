@@ -28,7 +28,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private LinearLayout phoneContainer;
@@ -103,34 +105,32 @@ public class MainActivity extends AppCompatActivity {
         EditText firstName = findViewById(R.id.edit_first_name);
         EditText birthCity = findViewById(R.id.edit_birth_city);
 
-        StringBuilder phoneNumbers = new StringBuilder();
+        List<String> phoneNumbers = new ArrayList<>();
         for (int i = 0; i < phoneContainer.getChildCount(); i++) {
             View phoneEntry = phoneContainer.getChildAt(i);
             if (phoneEntry instanceof LinearLayout) {
                 EditText phoneInput = (EditText) ((LinearLayout) phoneEntry).getChildAt(0);
                 String phoneNumber = phoneInput.getText().toString();
                 if (!phoneNumber.isEmpty()) {
-                    phoneNumbers.append("- ").append(phoneNumber).append("\n");
+                    phoneNumbers.add(phoneNumber);
                 }
             }
         }
 
-        String textToShow = "Last Name: " + lastName.getText().toString() + "\n"
-                + "First Name: " + firstName.getText().toString() + "\n"
-                + "Birth Date: " + birthDateEditText.getText().toString() + "\n"
-                + "Birth City: " + birthCity.getText().toString() + "\n"
-                + "Department: " + selectedDepartment + "\n"
-                + "Phone Numbers:\n" + (phoneNumbers.length() > 0 ? phoneNumbers.toString() : "None");;
+        UserInfo userInfo = new UserInfo(
+                lastName.getText().toString(),
+                firstName.getText().toString(),
+                birthCity.getText().toString(),
+                birthDateEditText.getText().toString(),
+                selectedDepartment,
+                phoneNumbers
+        );
 
-        Snackbar snackbar = Snackbar.make(findViewById(R.id.main_layout), textToShow, Snackbar.LENGTH_LONG);
-        snackbar.setAction("DISMISS", v1 -> snackbar.dismiss());
-
-        View snackbarView = snackbar.getView();
-        TextView snackbarText = snackbarView.findViewById(com.google.android.material.R.id.snackbar_text);
-        snackbarText.setMaxLines(10);
-        snackbarText.setSingleLine(false);
-        snackbar.show();
+        Intent intent = new Intent(this, DisplayActivity.class);
+        intent.putExtra("USER_INFO", userInfo);
+        startActivity(intent);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -151,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
     private void openWikipediaPage() {
         EditText birthCity = findViewById(R.id.edit_birth_city);
         String city = birthCity.getText().toString().trim();
