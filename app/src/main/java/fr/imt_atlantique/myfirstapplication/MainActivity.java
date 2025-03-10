@@ -2,6 +2,8 @@ package fr.imt_atlantique.myfirstapplication;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -62,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         birthDateEditText = findViewById(R.id.edit_birth_date);
 
         btnAddPhone.setOnClickListener(v -> addPhoneNumberField());
-        // class anonyme
+        // anonymous class
         spinnerDepartments.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
@@ -135,6 +137,36 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_wikipedia) {
+            openWikipediaPage(); // 点击菜单项，调用打开 Wikipedia 的方法
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    private void openWikipediaPage() {
+        EditText birthCity = findViewById(R.id.edit_birth_city);
+        String city = birthCity.getText().toString().trim();
+
+        if (city.isEmpty()) {
+            Snackbar.make(findViewById(R.id.main_layout), "Veuillez entrer la ville de naissance.", Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Generate a Wikipedia search URL for the city, replacing spaces with %20
+        String url = "http://fr.wikipedia.org/?search=" + city.replace(" ", "%20");
+        // ACTION_VIEW is used to tell the intent " I want to view something(in this case, it is url, so please help me)
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Snackbar.make(findViewById(R.id.main_layout), "Aucun navigateur trouvé pour ouvrir le lien.", Snackbar.LENGTH_SHORT).show();
+        }
+    }
 
     public void resetAction(MenuItem item) {
         EditText lastName = findViewById(R.id.edit_last_name);
@@ -171,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         ImageButton deleteButton = new ImageButton(this);
         deleteButton.setImageResource(android.R.drawable.ic_delete);
         deleteButton.setBackgroundColor(0);
-        // 只有一个 所以可以用兰巴达表达式
+        // Since this interface has only one method, we can use a lambda expression
         deleteButton.setOnClickListener(v -> {
             phoneContainer.removeView(phoneEntry);
             phoneCount--;

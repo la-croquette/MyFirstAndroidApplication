@@ -19,4 +19,5 @@
     <string name="reset_action">Réinitialiser les champs</string>
     <string name="add_phone_number">Ajouter un numéro de téléphone</string>
     <string name="remove_phone_number">Supprimer un numéro de téléphone</string>
+    <string name="action_wikipedia">Voir sur Wikipédia</string>
 </resources>
