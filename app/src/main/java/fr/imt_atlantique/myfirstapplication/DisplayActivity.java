@@ -1,40 +1,64 @@
 package fr.imt_atlantique.myfirstapplication;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import java.util.List;
 
 public class DisplayActivity extends AppCompatActivity {
 
+    private LinearLayout phoneContainer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display);
 
-        TextView textView = findViewById(R.id.text_display);
+        TextView nameTextView = findViewById(R.id.text_name);
+        TextView cityTextView = findViewById(R.id.text_city);
+        TextView birthDateTextView = findViewById(R.id.text_birth_date);
+        TextView departmentTextView = findViewById(R.id.text_department);
+        phoneContainer = findViewById(R.id.phone_container);
 
         UserInfo userInfo = getIntent().getParcelableExtra("USER_INFO");
 
         if (userInfo != null) {
-            StringBuilder displayText = new StringBuilder();
-            displayText.append("Nom: ").append(userInfo.getLastName()).append("\n");
-            displayText.append("Prénom: ").append(userInfo.getFirstName()).append("\n");
-            displayText.append("Ville de naissance: ").append(userInfo.getBirthCity()).append("\n");
-            displayText.append("Date de naissance: ").append(userInfo.getBirthDate()).append("\n");
-            displayText.append("Département: ").append(userInfo.getDepartment()).append("\n");
+            nameTextView.setText(userInfo.getFirstName() + " " + userInfo.getLastName());
+            cityTextView.setText("Ville: " + userInfo.getBirthCity());
+            birthDateTextView.setText("Date de naissance: " + userInfo.getBirthDate());
+            departmentTextView.setText("Département: " + userInfo.getDepartment());
 
             List<String> phoneNumbers = userInfo.getPhoneNumbers();
             if (phoneNumbers != null && !phoneNumbers.isEmpty()) {
-                displayText.append("Numéros de téléphone:\n");
                 for (String number : phoneNumbers) {
-                    displayText.append("- ").append(number).append("\n");
+                    addPhoneNumberView(number);
                 }
             } else {
-                displayText.append("Numéros de téléphone: Aucun\n");
+                TextView emptyText = new TextView(this);
+                emptyText.setText("Aucun numéro de téléphone");
+                phoneContainer.addView(emptyText);
             }
-
-            textView.setText(displayText.toString());
         }
+    }
+
+    private void addPhoneNumberView(String number) {
+        TextView phoneTextView = new TextView(this);
+        phoneTextView.setText(number);
+        phoneTextView.setTextSize(18);
+        phoneTextView.setPadding(0, 10, 0, 10);
+        phoneTextView.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+
+        phoneTextView.setOnClickListener(v -> dialPhoneNumber(number));
+
+        phoneContainer.addView(phoneTextView);
+    }
+
+    private void dialPhoneNumber(String phoneNumber) {
+        Intent intent = new Intent(Intent.ACTION_DIAL);
+        intent.setData(Uri.parse("tel:" + phoneNumber));
+        startActivity(intent);
     }
 }

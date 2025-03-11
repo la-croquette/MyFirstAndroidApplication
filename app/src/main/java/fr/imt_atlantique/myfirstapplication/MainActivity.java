@@ -3,6 +3,7 @@ package fr.imt_atlantique.myfirstapplication;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,6 +21,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
@@ -38,6 +41,18 @@ public class MainActivity extends AppCompatActivity {
     private EditText birthDateEditText;
     private int phoneCount = 0;
     private String selectedDepartment = "";
+
+    private final ActivityResultLauncher<Intent> dateLauncher =
+            registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                    int year = result.getData().getIntExtra("YEAR", 0);
+                    int month = result.getData().getIntExtra("MONTH", 0);
+                    int day = result.getData().getIntExtra("DAY", 0);
+                    birthDateEditText.setText(day + "/" + (month + 1) + "/" + year);
+                } else {
+                    Snackbar.make(findViewById(R.id.main_layout), "Sélection annulée", Snackbar.LENGTH_SHORT).show();
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,24 +95,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        birthDateEditText.setOnClickListener(v -> showDatePickerDialog());
-    }
 
-    private void showDatePickerDialog() {
+        birthDateEditText.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK); // Use the standard PICK
 
-        final Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
-
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, selectedYear, selectedMonth, selectedDay) -> {
-            String selectedDate = selectedDay + "/" + (selectedMonth + 1) + "/" + selectedYear;
-            birthDateEditText.setText(selectedDate);
-            updateSnackbarMessage();
-        }, year, month, day);
-
-        datePickerDialog.show();
+            dateLauncher.launch(intent);
+        });
+        loadUserData();
     }
 
     public void validateAction(View v) {
@@ -131,12 +135,12 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -258,5 +262,90 @@ public class MainActivity extends AppCompatActivity {
     private void updateSnackbarMessage() {
         String message = "Fields updated. Phone numbers: " + phoneCount + ", Birth Date: " + birthDateEditText.getText().toString() + ", Department: " + selectedDepartment;
         Snackbar.make(findViewById(R.id.main_layout), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        saveUserData();
+    }
+
+    private void saveUserData() {
+        SharedPreferences prefs = getSharedPreferences("UserData", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+
+        editor.putString("lastName", ((EditText) findViewById(R.id.edit_last_name)).getText().toString());
+        editor.putString("firstName", ((EditText) findViewById(R.id.edit_first_name)).getText().toString());
+        editor.putString("birthCity", ((EditText) findViewById(R.id.edit_birth_city)).getText().toString());
+        editor.putString("birthDate", birthDateEditText.getText().toString());
+        editor.putString("department", selectedDepartment);
+
+        List<String> phoneNumbers = new ArrayList<>();
+        for (int i = 0; i < phoneContainer.getChildCount(); i++) {
+            View phoneEntry = phoneContainer.getChildAt(i);
+            if (phoneEntry instanceof LinearLayout) {
+                EditText phoneInput = (EditText) ((LinearLayout) phoneEntry).getChildAt(0);
+                phoneNumbers.add(phoneInput.getText().toString());
+            }
+        }
+        editor.putString("phones", String.join(",", phoneNumbers));
+
+        editor.apply(); // 异步保存
+    }
+
+
+    private void loadUserData() {
+        SharedPreferences prefs = getSharedPreferences("UserData", MODE_PRIVATE);
+
+        ((EditText) findViewById(R.id.edit_last_name)).setText(prefs.getString("lastName", ""));
+        ((EditText) findViewById(R.id.edit_first_name)).setText(prefs.getString("firstName", ""));
+        ((EditText) findViewById(R.id.edit_birth_city)).setText(prefs.getString("birthCity", ""));
+        birthDateEditText.setText(prefs.getString("birthDate", ""));
+        selectedDepartment = prefs.getString("department", "");
+
+
+        String[] departmentsArray = getResources().getStringArray(R.array.departments);
+        for (int i = 0; i < departmentsArray.length; i++) {
+            if (departmentsArray[i].equals(selectedDepartment)) {
+                spinnerDepartments.setSelection(i);
+                break;
+            }
+        }
+
+        String phones = prefs.getString("phones", "");
+        if (!phones.isEmpty()) {
+            String[] phoneArray = phones.split(",");
+            for (String phone : phoneArray) {
+                addPhoneNumberFieldWithValue(phone);
+            }
+        }
+    }
+
+
+    private void addPhoneNumberFieldWithValue(String number) {
+        LinearLayout phoneEntry = new LinearLayout(this);
+        phoneEntry.setOrientation(LinearLayout.HORIZONTAL);
+
+        EditText phoneInput = new EditText(this);
+        phoneInput.setLayoutParams(new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
+        phoneInput.setHint("Enter phone number");
+        phoneInput.setInputType(android.text.InputType.TYPE_CLASS_PHONE);
+        phoneInput.setText(number); // 设置号码
+
+        ImageButton deleteButton = new ImageButton(this);
+        deleteButton.setImageResource(android.R.drawable.ic_delete);
+        deleteButton.setBackgroundColor(0);
+        deleteButton.setOnClickListener(v -> {
+            phoneContainer.removeView(phoneEntry);
+            phoneCount--;
+            updateSnackbarMessage();
+        });
+
+        phoneEntry.addView(phoneInput);
+        phoneEntry.addView(deleteButton);
+        phoneContainer.addView(phoneEntry);
+        phoneCount++;
     }
 }

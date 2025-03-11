@@ -1,14 +1,67 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/text_display"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:text="Informations utilisateur" />
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- 姓名 -->
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nom Prénom"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <!-- 城市 -->
+        <TextView
+            android:id="@+id/text_city"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ville"
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
+
+        <!-- 出生日期 -->
+        <TextView
+            android:id="@+id/text_birth_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date de naissance"
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
+
+        <!-- 部门 -->
+        <TextView
+            android:id="@+id/text_department"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Département"
+            android:textSize="18sp"
+            android:paddingBottom="16dp" />
+
+        <!-- 电话号码标题 -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Numéros de téléphone :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:paddingBottom="8dp" />
+
+        <!-- 电话号码列表容器 -->
+        <LinearLayout
+            android:id="@+id/phone_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+</ScrollView>
+
